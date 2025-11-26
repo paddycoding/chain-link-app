@@ -137,13 +137,13 @@ function App() {
     <div className="App">
       {/* 1. Add the RulesBanner component here */}
       <RulesBanner title="Game Rules 🔗">
-          <li>You are given the first word to a chain and the first letter of each of the words in the chain</li>
-          <li>You need to guess which word comes next in the chain</li>
-          <li>Each pair of words make a well known phrase, e.g. holiday home town</li>
-          <li>Where "holiday home" and "home town" both are phrases</li>
-          <li>The letters will go green if they are correct,</li>
-          <li>yellow if that word contains that letter but in a different place,</li>
-          <li>or grey if that word does not contain that letter</li>
+          <p>You are given the first word to a chain and the first letter of each of the words in the chain</p>
+          <p>You need to guess which word comes next in the chain</p>
+          <p>Each pair of words make a well known phrase, e.g. holiday home town</p>
+          <p>Where "holiday home" and "home town" both are phrases</p>
+          <p>The letters will go green if they are correct,</p>
+          <p>yellow if that word contains that letter but in a different place,</p>
+          <p>or grey if that word does not contain that letter</p>
       </RulesBanner>
       <h1>Chain Link Game</h1>
       <p>Lives: {lives}</p>
