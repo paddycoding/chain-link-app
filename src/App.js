@@ -100,6 +100,7 @@ function App() {
         const newLives = prev - 1;
         if (newLives <= 0) {
           setGameOver(true);
+          return;
         }
         return newLives;
       });
