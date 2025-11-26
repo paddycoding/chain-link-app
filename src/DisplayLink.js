@@ -53,7 +53,7 @@ function DisplayLink({ word, userGuess, handleInputChange, feedback, wordIndex, 
                   
      }}>
       {/* First letter always visible */}
-      <span style={{ fontSize: '20px', marginRight: '10px' }}>{wordArray[0]}</span>
+      <span style={{ fontSize: '20px', marginRight: '10px', alignItems: 'center'}}>{wordArray[0]}</span>
 
       {(
         <div
