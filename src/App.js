@@ -136,11 +136,15 @@ function App() {
   return (
     <div className="App">
       {/* 1. Add the RulesBanner component here */}
-      <RulesBanner title="Game Rules 🎮">
+      <RulesBanner title="Game Rules 🔗">
         <ul>
-          <li>Rule 1: Guess the word in 6 tries.</li>
-          <li>Rule 2: Green means the letter is correct.</li>
-          <li>Rule 3: Yellow means the letter is in the word but in the wrong spot.</li>
+          <li>You are given the first word to a chain and the first letter of each of the words in the chain</li>
+          <li>You need to guess which word comes next in the chain</li>
+          <li>Each pair of words make a well known phrase, e.g. holiday home town</li>
+          <li>Where "holiday home" and "home town" both are phrases</li>
+          <li>The letters will go green if they are correct,</li>
+          <li>yellow if that word contains that letter but in a different place,</li>
+          <li>or grey if that word does not contain that letter</li>
         </ul>
       </RulesBanner>
       <h1>Chain Link Game</h1>

@@ -22,7 +22,7 @@
 
 /* State when the banner is open */
 .rules-banner.open {
-  max-height: 500px; /* Needs to be larger than the actual content height */
+  max-height: 1000px; /* Needs to be larger than the actual content height */
   padding: 15px 20px; /* Padding for when the banner is visible */
 }
 
