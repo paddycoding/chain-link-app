@@ -1,0 +1,50 @@
+/* Base Style for the Banner */
+.rules-banner {
+  position: fixed; /* Keep it fixed on the viewport */
+  top: 0; /* Position it at the very top of the screen */
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Ensure it sits on top of all other content */
+  
+  /* Initial state: The banner content itself is hidden (rolled up) */
+  max-height: 0; 
+  overflow: hidden;
+
+  /* Basic styling */
+  background-color: #f7f7f7;
+  border-bottom: 3px solid #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 0 20px;
+
+  /* Set up the transition for the roll-up/down effect */
+  transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+/* State when the banner is open */
+.rules-banner.open {
+  max-height: 500px; /* Needs to be larger than the actual content height */
+  padding: 15px 20px; /* Padding for when the banner is visible */
+}
+
+/* State when the banner is actively closing */
+.rules-banner.rolling-up {
+  max-height: 0;
+  padding: 0 20px;
+}
+
+/* Content and Close Button Styling */
+.banner-content {
+  /* Allow content to scroll if it exceeds max-height */
+  overflow-y: auto; 
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}

@@ -4,6 +4,7 @@ import {motion} from 'framer-motion';
 import './App.css';
 import GivenLink from './GivenLink';
 import DisplayLink from './DisplayLink';
+import RulesBanner from './RulesBanner';
 
 import { words } from './words'; // Assuming this contains the words for each day
 
@@ -134,6 +135,14 @@ function App() {
 
   return (
     <div className="App">
+      {/* 1. Add the RulesBanner component here */}
+      <RulesBanner title="Game Rules 🎮">
+        <ul>
+          <li>Rule 1: Guess the word in 6 tries.</li>
+          <li>Rule 2: Green means the letter is correct.</li>
+          <li>Rule 3: Yellow means the letter is in the word but in the wrong spot.</li>
+        </ul>
+      </RulesBanner>
       <h1>Chain Link Game</h1>
       <p>Lives: {lives}</p>
       <p>Guess Word {currentGuessIndex} of 5</p>
