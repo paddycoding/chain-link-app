@@ -49,16 +49,17 @@ function DisplayLink({ word, userGuess, handleInputChange, feedback, wordIndex, 
     <div style={{ 
       display: 'flex',
       alignItems: 'center',
-      marginBottom: '20px'
+      marginBottom: '20px',
+      justifyContent: 'center'
                   
      }}>
       {/* First letter always visible */}
-      <span style={{ fontSize: '20px', marginRight: '10px', alignItems: 'center'}}>{wordArray[0]}</span>
+      <span style={{ fontSize: '20px', marginRight: '10px', alignItems: 'center',justifyContent: 'center'}}>{wordArray[0]}</span>
 
       {(
         <div
           className="letter-boxes"
-          style={{display: 'flex', alignItems: 'center' }}
+          style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
         >
           {wordArray.slice(1).map((letter, index) => (
             <input
