@@ -1,0 +1,40 @@
+/* Base Style for the Banner */
+.game-over-banner {
+  position: fixed; /* Keep it fixed on the viewport */
+  bottom: 0; /* Position it at the very bottom of the screen */
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Ensure it sits on top of all other content */
+  
+  /* Initial state: The banner content itself is hidden (rolled up) */
+  max-height: 0; 
+  overflow: hidden;
+
+  /* Basic styling */
+  background-color: #ff0000;
+  border-bottom: 3px solid #333;
+  box-shadow: 0 4px 8px rgba(137, 17, 17, 0.2);
+  padding: 0 20px;
+
+  /* Set up the transition for the roll-up/down effect */
+  transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+/* State when the banner is open */
+.game-over-banner.open {
+  max-height: 1000px; /* Needs to be larger than the actual content height */
+  padding: 15px 20px; /* Padding for when the banner is visible */
+}
+
+/* State when the banner is actively closing */
+.game-over-banner.rolling-up {
+  max-height: 0;
+  padding: 0 20px;
+}
+
+/* Content and Close Button Styling */
+.banner-content {
+  /* Allow content to scroll if it exceeds max-height */
+  overflow-y: auto; 
+}
+

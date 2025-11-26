@@ -5,6 +5,7 @@ import './App.css';
 import GivenLink from './GivenLink';
 import DisplayLink from './DisplayLink';
 import RulesBanner from './RulesBanner';
+import GameOverBanner from './GameOverBanner';
 
 import { words } from './words'; // Assuming this contains the words for each day
 
@@ -174,9 +175,12 @@ function App() {
       })}
 
     <div>
-      {gameOver && (
-          <button onClick={resetGame}>Try Again</button>
-      )}
+      {gameOver}
+      <GameOverBanner title = "GAME OVER">
+        <p>Thanks for playing!</p>
+        <p>Unfortunately you failed to find all the links</p>
+        <p>but be back tomorrow to try again!</p>
+      </GameOverBanner>
     </div>
     <p>Press Enter to Submit your Guess</p>
   </div>
