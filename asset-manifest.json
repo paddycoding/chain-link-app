@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/chain-link-app/static/css/main.c7080aa6.css",
-    "main.js": "/chain-link-app/static/js/main.618befe1.js",
+    "main.js": "/chain-link-app/static/js/main.e85b63a7.js",
     "static/js/453.1b7c2221.chunk.js": "/chain-link-app/static/js/453.1b7c2221.chunk.js",
     "index.html": "/chain-link-app/index.html",
     "main.c7080aa6.css.map": "/chain-link-app/static/css/main.c7080aa6.css.map",
-    "main.618befe1.js.map": "/chain-link-app/static/js/main.618befe1.js.map",
+    "main.e85b63a7.js.map": "/chain-link-app/static/js/main.e85b63a7.js.map",
     "453.1b7c2221.chunk.js.map": "/chain-link-app/static/js/453.1b7c2221.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c7080aa6.css",
-    "static/js/main.618befe1.js"
+    "static/js/main.e85b63a7.js"
   ]
 }
