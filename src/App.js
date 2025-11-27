@@ -9,6 +9,9 @@ import GameOverBanner from './GameOverBanner';
 
 import { words } from './words'; // Assuming this contains the words for each day
 
+const GAME_STORAGE_KEY = 'chainLinkProgress';
+const todayDateString = new Date().toDateString();
+
 function App() {
   const [userGuess, setUserGuess] = useState(Array(6).fill([]));
   const [feedback, setFeedback] = useState(Array(6).fill([]));
@@ -19,17 +22,67 @@ function App() {
   const [gameOver, setGameOver] = useState(false);
   const [incorrectGuess, setIncorrectGuess] = useState(false);
   const [lockedRows, setLockedRows] = useState(Array(6).fill(false));
-  
   const [activeRowIndex, setActiveRowIndex] = useState(0);
+  
 
-
+  const saveProgress = (
+    currentGuess, 
+    currentFeedback, 
+    currentIndex, 
+    currentLives, 
+    isOver,
+    wordData
+  ) => {
+    const dataToSave = {
+      lastPlayedDate: todayDateString,
+      currentProgress: {
+        userGuess: currentGuess,
+        feedback: currentFeedback,
+        currentGuessIndex: currentIndex,
+        lives: currentLives,
+        gameOver: isOver,
+        currentWord: wordData
+      }
+    };
+    localStorage.setItem(GAME_STORAGE_KEY, JSON.stringify(dataToSave));
+  };
 
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
     // Fetch today's words based on the date (or from a static list of words)
     const wordForToday = words.find((entry) => entry.date === today);
     setCurrentWord(wordForToday || {}); // Store today's words
+
+    const storedData = localStorage.getItem(GAME_STORAGE_KEY);
+    
+    if (storedData) {
+      const data = JSON.parse(storedData);
+
+      // 🔑 Check if the stored date matches today's date
+      if (data.lastPlayedDate === todayDateString) {
+        
+        // Resume Game: Load all stored progress
+        const p = data.currentProgress;
+        
+        // Only load if the puzzle ID matches (using currentWord as the ID)
+        if (JSON.stringify(p.currentWord) === JSON.stringify(wordForToday)) {
+            setUserGuess(p.userGuess);
+            setFeedback(p.feedback);
+            setCurrentGuessIndex(p.currentGuessIndex);
+            setLives(p.lives);
+            setGameOver(p.gameOver);
+            setActiveRowIndex(p.currentGuessIndex);
+            console.log("Resuming today's game.");
+            return; // Exit the function after loading progress
+        }
+      }
+      
+      // If dates don't match, or puzzle IDs don't match, reset
+      localStorage.removeItem(GAME_STORAGE_KEY);
+    }
   }, []);
+
+  
 
 
   // Handle input change for each word's letter boxes
@@ -38,6 +91,14 @@ function App() {
     newGuess[rowIndex] = [...(newGuess[rowIndex] || [])];
     newGuess[rowIndex][letterIndex] = value.toLowerCase();
     setUserGuess(newGuess);
+    saveProgress(
+      userGuess, 
+      newFeedbackArray, 
+      currentGuessIndex, 
+      newLives, 
+      newLives <= 0,
+      currentWord
+    );
   };
 
   // Check the user's guess and provide feedback after pressing Enter
@@ -107,6 +168,15 @@ function App() {
       });
     }
     setActiveRowIndex(prev => prev + 1);
+
+    saveProgress(
+      userGuess, 
+      newFeedbackArray, 
+      currentGuessIndex, 
+      newLives, 
+      newLives <= 0,
+      currentWord
+    );
   };
 
   // Handle the Enter key press for submission
