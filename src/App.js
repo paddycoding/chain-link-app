@@ -95,8 +95,8 @@ function App() {
       userGuess, 
       newFeedbackArray, 
       currentGuessIndex, 
-      newLives, 
-      newLives <= 0,
+      lives, 
+      lives <= 0,
       currentWord
     );
   };
@@ -173,8 +173,8 @@ function App() {
       userGuess, 
       newFeedbackArray, 
       currentGuessIndex, 
-      newLives, 
-      newLives <= 0,
+      lives, 
+      lives <= 0,
       currentWord
     );
   };
