@@ -168,6 +168,7 @@ function App() {
                 rowIndex={rowIdx}
                 locked={lockedRows[rowIdx]}
                 isActiveRow={rowIdx === currentGuessIndex}
+                isGameOver = {gameOver}
               />
             )}
           </div>

@@ -1,7 +1,7 @@
 import React, {useRef, useEffect} from 'react';
 import { motion } from 'framer-motion';
 
-function DisplayLink({ word, userGuess, handleInputChange, feedback, wordIndex, rowIndex, handleKeyPress, locked, isActiveRow }) {
+function DisplayLink({ word, userGuess, handleInputChange, feedback, wordIndex, rowIndex, handleKeyPress, locked, isActiveRow, isGameOver }) {
     const wordArray = word.split('');
     const inputRefs = useRef([]);
 
@@ -82,7 +82,7 @@ function DisplayLink({ word, userGuess, handleInputChange, feedback, wordIndex, 
                 }}
             autoFocus={false} // Auto-focus next input
             ref={(el) => inputRefs.current[index] = el}
-            readOnly={locked} // Lock inputs after feedback
+            readOnly={locked || isGameOver} // Lock inputs after feedback
               />
           ))}
         </div>
