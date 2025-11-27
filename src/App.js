@@ -93,7 +93,7 @@ function App() {
     setUserGuess(newGuess);
     saveProgress(
       userGuess, 
-      newFeedbackArray, 
+      feedback, 
       currentGuessIndex, 
       lives, 
       lives <= 0,
