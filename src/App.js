@@ -18,7 +18,7 @@ function App() {
   const [currentGuessIndex, setCurrentGuessIndex] = useState(0); // Start with word2 (index 1)
   const [currentDate, setCurrentDate] = useState('');
   const [currentWord, setCurrentWord] = useState({}); // Store the words for today
-  const [lives, setLives] = useState(3);
+  const [lives, setLives] = useState(10);
   const [gameOver, setGameOver] = useState(false);
   const [incorrectGuess, setIncorrectGuess] = useState(false);
   const [lockedRows, setLockedRows] = useState(Array(6).fill(false));
