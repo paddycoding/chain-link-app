@@ -6,7 +6,6 @@ function DisplayLink({ word, userGuess, handleInputChange, feedback, wordIndex, 
     const inputRefs = useRef([]);
 
     useEffect(() => {
-      console.log('Trying to focus input in row:', wordIndex);
       if (inputRefs.current[0] && isActiveRow && !locked) {
         inputRefs.current[0].focus();
       }
