@@ -11,7 +11,8 @@ function DisplayLink({
     handleKeyPress, 
     locked, 
     isActiveRow, 
-    isGameOver 
+    isGameOver,
+    revealedHintIndices
 }) {
     // Note: wordArray[0] is the first (given) letter. wordArray.slice(1) are the guessable letters.
     const wordArray = word.split(''); 
@@ -42,23 +43,21 @@ function DisplayLink({
 
     // Function to determine the style and state for each letter
     const getLetterFeedback = (index) => {
-        if (!feedback || !feedback[index]) {
-            return { style: {}, isHint: false };
+        // 🔑 CHECK THE NEW PROP FIRST FOR HINT STATUS
+        const isHint = revealedHintIndices.includes(index); 
+
+        if (isHint) {
+            // Hint style, indicating the correct letter will be shown
+            return { style: { backgroundColor: '#ADD8E6', color: 'black', border: '2px solid #0000FF' }, isHint: true };
         }
 
-        const feedbackType = feedback[index];
-        
-        switch (feedbackType) {
-            case 'correct':
-                // Letters that were correctly entered before a mistake was made
-                return { style: { backgroundColor: 'green', color: 'white' }, isHint: false };
-            case 'hint':
-                // The position of the first mistake
-                return { style: { backgroundColor: '#ADD8E6', color: 'black', border: '2px solid #0000FF' }, isHint: true }; // Light Blue/Black for hint
-            // No need for 'wrong-position' or 'incorrect' anymore
-            default:
-                return { style: {}, isHint: false };
+        // Check for 'correct' feedback from the main array (for successfully guessed letters)
+        if (feedback && feedback[index] === 'correct') {
+            return { style: { backgroundColor: 'green', color: 'white' }, isHint: false };
         }
+        
+        // Default style
+        return { style: {}, isHint: false };
     };
 
     return (
@@ -85,11 +84,11 @@ function DisplayLink({
                     const { style: feedbackStyle, isHint } = getLetterFeedback(index);
                     
                     // 🔑 New Logic for Input Value
-                    const boxValue = isHint 
-                        ? correctLetter // Display the correct letter when it's a hint
-                        : userGuess[index] || ''; // Otherwise, display user input or blank
-                    
-                    // 🔑 New Logic for ReadOnly
+                  const boxValue = isHint 
+                    ? correctLetter // Display the actual correct letter!
+                    : userGuess[index] || ''; 
+                
+                    // 🔑 ReadOnly: Locked, game over, OR if it's a hint
                     const isReadOnly = locked || isGameOver || isHint;
 
                     return (

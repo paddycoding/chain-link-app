@@ -24,6 +24,7 @@ function App() {
   const [lockedRows, setLockedRows] = useState(Array(6).fill(false));
   const [activeRowIndex, setActiveRowIndex] = useState(0);
   const [hintPosition, setHintPosition] = useState(-1);
+  const [revealedHintIndices, setRevealedHintIndices] = useState([]);
   
 
   const saveProgress = (
@@ -109,49 +110,63 @@ const checkGuess = () => {
   
     const target = fullWord.toLowerCase();
     const guessLetters = userGuess[currentGuessIndex] || [];
-    const guess = guessLetters.join('').toLowerCase();
     const wordToGuess = target.slice(1); // exclude first letter
     const guessLength = wordToGuess.length;
     
-    // --- New Logic Starts Here ---
-    let firstMistakeIndex = -1;
+    // 1. Identify all incorrect indices
+    const incorrectIndices = [];
     let isCorrect = true;
 
-    // 1. Check for the first incorrect letter
     for (let i = 0; i < guessLength; i++) {
-        if (guess[i] !== wordToGuess[i]) {
-            firstMistakeIndex = i;
+        if (guessLetters[i] !== wordToGuess[i]) {
+            incorrectIndices.push(i);
             isCorrect = false;
-            break; // Stop at the first mistake
         }
     }
   
-    // 2. Prepare Feedback (Simpler now)
-    const feedbackResult = Array(guessLength).fill('correct'); // Default to correct
-
+    // 2. Core Game Flow
     if (isCorrect) {
-        // Correct Guess: Lock row, move to next word, save progress.
+        // Correct Guess: Lock row, move to next word, reset hint tracking
         const newLocked = [...lockedRows];
         newLocked[currentGuessIndex] = true;
         setLockedRows(newLocked);
-  
-        if (currentGuessIndex < 5) { // Assuming 5 guesses max (rows 0 to 4)
+        
+        // Advance to the next word
+        if (currentGuessIndex < 5) { // Assuming 5 guessable words max
             setCurrentGuessIndex(prev => prev + 1);
             setActiveRowIndex(prev => prev + 1);
         } else {
-            // Player guessed the final word correctly
             setGameOver(true);
         }
-        // Reset hint position for the next word
-        setHintPosition(-1); 
+        
+        // Reset hint state for the new word
+        setRevealedHintIndices([]); 
 
     } else {
-        // Incorrect Guess: Give a hint, deduct life.
+        // Incorrect Guess: Deduct life and give ONE NEW hint
 
-        // Update the feedback array at the mistake index to signal a hint
-        feedbackResult[firstMistakeIndex] = 'hint'; 
+        // Find incorrect indices that have NOT yet been revealed as a hint
+        const unrevealedMistakes = incorrectIndices.filter(
+            index => !revealedHintIndices.includes(index)
+        );
+
+        if (unrevealedMistakes.length > 0) {
+            // Select the first unrevealed mistake index to give as a hint
+            const newHintIndex = unrevealedMistakes[0]; 
+            
+            // Add the new hint index to the state
+            setRevealedHintIndices(prev => [...prev, newHintIndex]);
+
+        } else {
+            // SCENARIO: The user made an incorrect guess, but every incorrect spot
+            // has ALREADY been revealed as a hint. This means the user has 
+            // the full word revealed but still submitted a wrong guess (or missed the last one).
+            // You can decide how to handle this, but for simplicity, we treat it as 
+            // a lost life without adding a new hint (since there are no more new hints to give).
+            console.log("No new hints available for this word.");
+        }
         
-        // 3. Deduct Life and check for Game Over
+        // Deduct Life and check for Game Over
         setLives(prev => {
             const newLives = prev - 1;
             if (newLives <= 0) {
@@ -160,24 +175,29 @@ const checkGuess = () => {
             }
             return newLives;
         });
-
-        // 4. Set the hint position
-        setHintPosition(firstMistakeIndex);
     }
 
-    // Update feedback state (even if correct, we update all to 'correct')
-    const newFeedbackArray = [...feedback];
-    newFeedbackArray[currentGuessIndex] = feedbackResult;
+    // 3. Update Feedback State
+    // Now, feedback only needs to mark letters that were *correctly* guessed 
+    // OR if the entire word was guessed correctly. The hint logic is primarily 
+    // driven by revealedHintIndices state, not the feedback array itself.
+    const newFeedbackArray = Array(guessLength).fill(null).map((_, i) => {
+        if (isCorrect) return 'correct';
+        if (guessLetters[i] === wordToGuess[i]) return 'correct';
+        return null; // Don't mark incorrect spots; the UI will use revealedHintIndices
+    });
+
     setFeedback(newFeedbackArray);
 
-    // Save current progress
+    // Save Progress (You should also save revealedHintIndices)
     saveProgress(
         userGuess, 
         newFeedbackArray, 
-        isCorrect ? currentGuessIndex + 1 : currentGuessIndex, // Only advance index if correct
+        isCorrect ? currentGuessIndex + 1 : currentGuessIndex,
         isCorrect ? lives : lives - 1,
-        lives <= 1, // Will be true if lives drops to 0
-        currentWord
+        lives <= 1,
+        currentWord,
+        revealedHintIndices // **Make sure to update saveProgress to accept and save this state**
     );
 };
 
@@ -241,6 +261,7 @@ const checkGuess = () => {
                 locked={lockedRows[rowIdx]}
                 isActiveRow={rowIdx === currentGuessIndex}
                 isGameOver = {gameOver}
+                revealedHintIndices={currentGuessIndex === rowIdx ? revealedHintIndices : []}
               />
             )}
           </div>
