@@ -23,6 +23,7 @@ function App() {
   const [incorrectGuess, setIncorrectGuess] = useState(false);
   const [lockedRows, setLockedRows] = useState(Array(6).fill(false));
   const [activeRowIndex, setActiveRowIndex] = useState(0);
+  const [hintPosition, setHintPosition] = useState(-1);
   
 
   const saveProgress = (
@@ -102,7 +103,7 @@ function App() {
   };
 
   // Check the user's guess and provide feedback after pressing Enter
-  const checkGuess = () => {
+const checkGuess = () => {
     const fullWord = currentWord[`word${currentGuessIndex + 2}`];
     if (!fullWord) return;
   
@@ -110,74 +111,75 @@ function App() {
     const guessLetters = userGuess[currentGuessIndex] || [];
     const guess = guessLetters.join('').toLowerCase();
     const wordToGuess = target.slice(1); // exclude first letter
-  
     const guessLength = wordToGuess.length;
-    const feedbackResult = Array(guessLength).fill(''); // 'correct', 'wrong-position', 'incorrect'
-  
-    const letterCounts = {};
-  
-    // Count frequencies of letters in the actual word (excluding the first letter)
-    for (let letter of wordToGuess) {
-      letterCounts[letter] = (letterCounts[letter] || 0) + 1;
-    }
-  
-    // First pass — mark correct positions
+    
+    // --- New Logic Starts Here ---
+    let firstMistakeIndex = -1;
+    let isCorrect = true;
+
+    // 1. Check for the first incorrect letter
     for (let i = 0; i < guessLength; i++) {
-      if (guess[i] === wordToGuess[i]) {
-        feedbackResult[i] = 'correct';
-        letterCounts[guess[i]]--; // use up that letter
-      }
-    }
-  
-    // Second pass — mark wrong positions
-    for (let i = 0; i < guessLength; i++) {
-      if (feedbackResult[i] === '') {
-        if (letterCounts[guess[i]] > 0) {
-          feedbackResult[i] = 'wrong-position';
-          letterCounts[guess[i]]--;
-        } else {
-          feedbackResult[i] = 'incorrect';
+        if (guess[i] !== wordToGuess[i]) {
+            firstMistakeIndex = i;
+            isCorrect = false;
+            break; // Stop at the first mistake
         }
-      }
     }
   
-    // Update feedback state
+    // 2. Prepare Feedback (Simpler now)
+    const feedbackResult = Array(guessLength).fill('correct'); // Default to correct
+
+    if (isCorrect) {
+        // Correct Guess: Lock row, move to next word, save progress.
+        const newLocked = [...lockedRows];
+        newLocked[currentGuessIndex] = true;
+        setLockedRows(newLocked);
+  
+        if (currentGuessIndex < 5) { // Assuming 5 guesses max (rows 0 to 4)
+            setCurrentGuessIndex(prev => prev + 1);
+            setActiveRowIndex(prev => prev + 1);
+        } else {
+            // Player guessed the final word correctly
+            setGameOver(true);
+        }
+        // Reset hint position for the next word
+        setHintPosition(-1); 
+
+    } else {
+        // Incorrect Guess: Give a hint, deduct life.
+
+        // Update the feedback array at the mistake index to signal a hint
+        feedbackResult[firstMistakeIndex] = 'hint'; 
+        
+        // 3. Deduct Life and check for Game Over
+        setLives(prev => {
+            const newLives = prev - 1;
+            if (newLives <= 0) {
+                setGameOver(true);
+                return 0;
+            }
+            return newLives;
+        });
+
+        // 4. Set the hint position
+        setHintPosition(firstMistakeIndex);
+    }
+
+    // Update feedback state (even if correct, we update all to 'correct')
     const newFeedbackArray = [...feedback];
     newFeedbackArray[currentGuessIndex] = feedbackResult;
     setFeedback(newFeedbackArray);
-  
-    if (guess === wordToGuess) {
-      const newLocked = [...lockedRows];
-      newLocked[currentGuessIndex] = true;
-      setLockedRows(newLocked);
-  
-      if (currentGuessIndex < 6) {
-        setCurrentGuessIndex(prev => prev + 1);
-      } else {
-        setGameOver(true);
-      }
-    } else {
-      setLives(prev => {
-        //lives = lives -1;
-        const newLives = prev - 1;
-        if (newLives <= 0) {
-          setGameOver(true);
-          return;
-        }
-        return newLives;
-      });
-    }
-    setActiveRowIndex(prev => prev + 1);
 
+    // Save current progress
     saveProgress(
-      userGuess, 
-      newFeedbackArray, 
-      currentGuessIndex, 
-      lives, 
-      lives <= 0,
-      currentWord
+        userGuess, 
+        newFeedbackArray, 
+        isCorrect ? currentGuessIndex + 1 : currentGuessIndex, // Only advance index if correct
+        isCorrect ? lives : lives - 1,
+        lives <= 1, // Will be true if lives drops to 0
+        currentWord
     );
-  };
+};
 
   // Handle the Enter key press for submission
   const handleKeyPress = (event) => {
